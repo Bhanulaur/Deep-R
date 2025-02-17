@@ -1,0 +1,7 @@
+mkdir user-profile-management
+cd user-profile-management
+npm init -y
+
+
+
+npm install express mongoose dotenv bcryptjs jsonwebtoken cors body-parser
