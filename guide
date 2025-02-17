@@ -1,0 +1,17 @@
+Features of the App:
+	1.	User Registration:
+	•	The /api/auth/register endpoint allows users to register by providing their name, email, and password.
+	•	The password is hashed using bcryptjs before being stored in the database.
+	2.	User Login:
+	•	The /api/auth/login endpoint authenticates users by checking their email and password.
+	•	Upon successful login, a JWT token is generated and sent to the client. This token is required to access protected routes.
+	3.	Profile Management:
+	•	Get Profile: The /api/users/profile endpoint retrieves the authenticated user’s profile details.
+	•	
+Update Profile: The /api/users/profile endpoint allows users to update their name, email, and profile.
+
+
+Delete Profile: The /api/users/profile endpoint deletes the user’s profile.
+	4.	JWT Authentication:
+	•	The app uses JWT tokens to secure API routes. The token is sent in the Authorization header for protected routes.
+	•	The authenticate middleware checks the token and allows access to routes only if the token is valid.
