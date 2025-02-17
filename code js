@@ -1,0 +1,41 @@
+// Simple AI Chatbot in JavaScript
+
+// Function to respond to user input
+function getChatbotResponse(userInput) {
+    // Normalize input by converting to lowercase and removing extra spaces
+    userInput = userInput.toLowerCase().trim();
+    
+    // Predefined patterns and responses
+    const patterns = [
+        { pattern: /hello|hi|hey/, response: "Hello! How can I help you today?" },
+        { pattern: /how are you|how's it going/, response: "I'm just a bot, but I'm doing fine! How about you?" },
+        { pattern: /what is your name|who are you/, response: "I am a chatbot created using JavaScript. What's your name?" },
+        { pattern: /bye|goodbye|see you/, response: "Goodbye! It was nice talking to you!" },
+        { pattern: /your favorite color|color/, response: "I don't have a favorite color, but I think blue looks nice!" },
+        { pattern: /what is javascript|tell me about javascript/, response: "JavaScript is a versatile programming language used primarily for web development. It allows dynamic content on web pages." },
+        { pattern: /tell me a joke|make me laugh/, response: "Why don't skeletons fight each other? They don't have the guts!" },
+        { pattern: /thanks|thank you/, response: "You're welcome! Let me know if you need anything else." },
+        { pattern: /default/, response: "Sorry, I didn't quite get that. Can you ask something else?" }
+    ];
+    
+    // Find a matching pattern or return default response
+    for (let i = 0; i < patterns.length; i++) {
+        if (patterns[i].pattern.test(userInput)) {
+            return patterns[i].response;
+        }
+    }
+    
+    // If no patterns matched, return the default response
+    return patterns[patterns.length - 1].response;
+}
+
+// Function to simulate a chatbot conversation
+function startChat() {
+    const userInput = prompt("You: "); // Prompt for user input in browser
+    const chatbotResponse = getChatbotResponse(userInput); // Get bot's response
+    alert("Chatbot: " + chatbotResponse); // Display bot's response in alert
+    startChat(); // Repeat the chat
+}
+
+// Start the conversation
+startChat();
