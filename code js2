@@ -1,0 +1,130 @@
+function simpleChatbot(input) {
+  const responses = {
+    "hello": "Hi there!",
+    "how are you": "I'm doing well, thank you for asking!",
+    "bye": "Goodbye, have a great day!",
+    "default": "Sorry, I don't understand that."
+  };
+
+  input = input.toLowerCase();
+  return responses[input] || responses["default"];
+}
+
+console.log(simpleChatbot("Hello"));  // Output: "Hi there!"
+console.log(simpleChatbot("Bye"));  // Output: "Goodbye, have a great day!"
+console.log(simpleChatbot("Unknown input"));  // Output: "Sorry, I don't understand that."
+function advancedChatbot(input) {
+  const patterns = [
+    { pattern: /hello|hi|hey/, response: "Hello! How can I assist you today?" },
+    { pattern: /bye|goodbye|see you/, response: "Goodbye! Hope to talk soon!" },
+    { pattern: /how are you|how's it going/, response: "I'm good, thanks for asking!" },
+    { pattern: /your name|who are you/, response: "I'm your friendly chatbot!" },
+    { pattern: /thanks|thank you/, response: "You're welcome!" },
+    { pattern: /default/, response: "Sorry, I didn't quite catch that." }
+  ];
+
+  input = input.toLowerCase();
+  for (let pattern of patterns) {
+    if (pattern.pattern.test(input)) {
+      return pattern.response;
+    }
+  }
+  return patterns[patterns.length - 1].response;
+}
+
+console.log(advancedChatbot("Hi there"));  // Output: "Hello! How can I assist you today?"
+console.log(advancedChatbot("What's your name?"));  // Output: "I'm your friendly chatbot!"
+function sentimentAnalysis(input) {
+  const positiveWords = ["good", "great", "happy", "awesome", "excellent"];
+  const negativeWords = ["bad", "sad", "angry", "terrible", "awful"];
+
+  const lowerInput = input.toLowerCase();
+
+  const isPositive = positiveWords.some(word => lowerInput.includes(word));
+  const isNegative = negativeWords.some(word => lowerInput.includes(word));
+
+  if (isPositive) return "Positive sentiment detected!";
+  if (isNegative) return "Negative sentiment detected!";
+  return "Neutral sentiment detected!";
+}
+
+console.log(sentimentAnalysis("I feel great today!"));  // Output: "Positive sentiment detected!"
+console.log(sentimentAnalysis("This is terrible!"));  // Output: "Negative sentiment detected!"
+
+function jokeBot() {
+  const jokes = [
+    "Why don't skeletons fight each other? They don't have the guts!",
+    "Why can't you trust an atom? Because they make up everything!",
+    "I told my wife she was drawing her eyebrows too high. She looked surprised!",
+    "What do you call fake spaghetti? An impasta!"
+  ];
+
+  const randomIndex = Math.floor(Math.random() * jokes.length);
+  return jokes[randomIndex];
+}
+
+console.log(jokeBot());  // Output: Random joke from the list
+
+
+function mathBot(input) {
+  const [operand1, operator, operand2] = input.split(" ");
+  
+  const num1 = parseFloat(operand1);
+  const num2 = parseFloat(operand2);
+
+  switch (operator) {
+    case "+":
+      return num1 + num2;
+    case "-":
+      return num1 - num2;
+    case "*":
+      return num1 * num2;
+    case "/":
+      if (num2 !== 0) {
+        return num1 / num2;
+      } else {
+        return "Cannot divide by zero!";
+      }
+    default:
+      return "Invalid operator!";
+  }
+}
+
+console.log(mathBot("5 + 3"));  // Output: 8
+console.log(mathBot("10 / 2"));  // Output: 5
+console.log(mathBot("5 / 0"));  // Output: "Cannot divide by zero!"
+
+
+// Load TensorFlow.js (assuming it's included in the HTML)
+async function classifyImage(image) {
+  const model = await tf.loadLayersModel('https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v2_1.0_224/model.json');
+
+  const imageTensor = tf.browser.fromPixels(image).resizeNearestNeighbor([224, 224]).toFloat();
+  const predictions = await model.predict(imageTensor.expandDims(0));
+  
+  predictions.print();  // Show predictions (top categories for the image)
+}
+
+// Use the image element in HTML
+const image = document.getElementById('image');  // Assuming there's an <img> with id 'image'
+classifyImage(image);
+
+function weatherDecisionTree(temperature, condition) {
+  if (temperature > 30 && condition === "sunny") {
+    return "It's perfect for a beach day!";
+  } else if (temperature > 20 && condition === "cloudy") {
+    return "Great for a walk in the park.";
+  } else if (temperature <= 20 && condition === "rainy") {
+    return "Stay inside with a good book!";
+  } else if (temperature < 0 && condition === "snowy") {
+    return "Time for some winter sports!";
+  } else {
+    return "I don't know what to suggest for this weather!";
+  }
+}
+
+console.log(weatherDecisionTree(35, "sunny"));  // Output: "It's perfect for a beach day!"
+console.log(weatherDecisionTree(15, "rainy"));  // Output: "Stay inside with a good book!"
+console.log(weatherDecisionTree(-5, "snowy"));  // Output: "Time for some winter sports!"
+
+
