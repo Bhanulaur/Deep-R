@@ -1,0 +1,54 @@
+import os
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+# Function to extract features from a file
+def extract_features(file_path):
+    # This is just a placeholder for actual feature extraction
+    # For example, we could look at byte sequences or other file characteristics.
+    file_size = os.path.getsize(file_path)
+    with open(file_path, 'rb') as file:
+        first_bytes = file.read(10)  # Read first 10 bytes (as an example)
+    return [file_size, sum(first_bytes)]
+
+# Create a dataset (this is a simplified example)
+# Normally, you would load a dataset of labeled malware and clean files
+data = []
+labels = []  # 0 for clean, 1 for malicious
+
+# Example: Add some clean and malicious files for training (use actual paths)
+for file_path in ["path_to_clean_file_1", "path_to_malicious_file_1"]:
+    features = extract_features(file_path)
+    label = 0 if "clean" in file_path else 1
+    data.append(features)
+    labels.append(label)
+
+# Convert to DataFrame for easier handling
+df = pd.DataFrame(data, columns=["File_Size", "First_Bytes_Sum"])
+df["Label"] = labels
+
+# Train-test split
+X = df.drop("Label", axis=1)
+y = df["Label"]
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Create and train a Random Forest model
+model = RandomForestClassifier()
+model.fit(X_train, y_train)
+
+# Make predictions
+y_pred = model.predict(X_test)
+
+# Evaluate model
+print(f"Accuracy: {accuracy_score(y_test, y_pred) * 100:.2f}%")
+
+# Example: Scanning a new file
+new_file = "path_to_new_file"
+new_features = extract_features(new_file)
+prediction = model.predict([new_features])
+if prediction == 1:
+    print(f"Warning: {new_file} is identified as malicious!")
+else:
+    print(f"{new_file} is safe.")
