@@ -1,0 +1,61 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main      # Trigger the pipeline when pushing to the main branch
+  pull_request:
+    branches:
+      - main      # Trigger the pipeline on pull requests targeting main
+
+jobs:
+  # Job to build and test the app
+  build_and_test:
+    runs-on: ubuntu-latest      # The runner OS
+
+    steps:
+    # Step 1: Checkout the repository
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
+    # Step 2: Set up Node.js
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'       # Specify Node.js version
+
+    # Step 3: Install dependencies
+    - name: Install Dependencies
+      run: npm install
+
+    # Step 4: Run tests
+    - name: Run Tests
+      run: npm test
+
+  # Job to deploy the app
+  deploy:
+    runs-on: ubuntu-latest      # The runner OS
+
+    needs: build_and_test       # This job depends on the "build_and_test" job
+    if: success()               # Only run if the "build_and_test" job is successful
+
+    steps:
+    # Step 1: Checkout the repository
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
+    # Step 2: Set up SSH for deployment (if needed)
+    - name: Set up SSH for deployment
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  # Add your private SSH key as a secret
+
+    # Step 3: Deploy to the production server
+    - name: Deploy to Production
+      run: |
+        ssh -o StrictHostKeyChecking=no user@your-server.com <<EOF
+          cd /path/to/your/app
+          git pull origin main
+          npm install --production
+          pm2 restart app_name        # Example for restarting the app with pm2
+        EOF
