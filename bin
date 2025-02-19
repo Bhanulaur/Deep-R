@@ -1,0 +1,173 @@
+#!/bin/bash
+
+# ============================================================
+# 1. Script to Display System Information
+# ============================================================
+
+display_system_info() {
+    echo "==== System Information ===="
+    echo "Hostname: $(hostname)"
+    echo "OS Type: $(uname)"
+    echo "Kernel Version: $(uname -r)"
+    echo "Architecture: $(uname -m)"
+    echo "Uptime: $(uptime -p)"
+    echo "Logged in Users: $(who)"
+    echo "Disk Usage: "
+    df -h
+    echo "Memory Usage: "
+    free -h
+}
+
+# ============================================================
+# 2. Script to Create a Backup of a Directory
+# ============================================================
+
+backup_directory() {
+    echo "==== Directory Backup ===="
+    read -p "Enter the directory to backup: " source_dir
+    read -p "Enter the backup destination directory: " dest_dir
+
+    if [ ! -d "$source_dir" ]; then
+        echo "Source directory does not exist!"
+        exit 1
+    fi
+
+    if [ ! -d "$dest_dir" ]; then
+        echo "Destination directory does not exist. Creating it..."
+        mkdir -p "$dest_dir"
+    fi
+
+    timestamp=$(date +%Y%m%d_%H%M%S)
+    backup_name="backup_$timestamp.tar.gz"
+
+    echo "Creating backup..."
+    tar -czf "$dest_dir/$backup_name" -C "$source_dir" .
+
+    echo "Backup created: $dest_dir/$backup_name"
+}
+
+# ============================================================
+# 3. Script to Monitor Disk Usage and Alert
+# ============================================================
+
+monitor_disk_usage() {
+    echo "==== Disk Usage Monitoring ===="
+    threshold=80
+    disk_usage=$(df / | grep / | awk '{ print $5 }' | sed 's/%//g')
+
+    if [ "$disk_usage" -ge "$threshold" ]; then
+        echo "Warning: Disk usage is above $threshold%. Current usage: $disk_usage%"
+    else
+        echo "Disk usage is below threshold. Current usage: $disk_usage%"
+    fi
+}
+
+# ============================================================
+# 4. Script to List Active Processes
+# ============================================================
+
+list_processes() {
+    echo "==== Active Processes ===="
+    ps aux --sort=-%mem | head -n 10
+}
+
+# ============================================================
+# 5. Script to Add a New User to the System
+# ============================================================
+
+add_new_user() {
+    echo "==== Add New User ===="
+    read -p "Enter the username: " username
+    read -p "Enter the full name: " fullname
+    read -p "Enter the password: " password
+
+    sudo useradd -m -c "$fullname" "$username"
+    echo "$username:$password" | sudo chpasswd
+
+    echo "User $username added successfully!"
+}
+
+# ============================================================
+# 6. Script to Search for Files by Extension
+# ============================================================
+
+search_files_by_extension() {
+    echo "==== Search Files by Extension ===="
+    read -p "Enter the directory to search: " search_dir
+    read -p "Enter the file extension to search for (e.g., .txt, .jpg): " extension
+
+    if [ ! -d "$search_dir" ]; then
+        echo "Directory does not exist!"
+        exit 1
+    fi
+
+    find "$search_dir" -type f -name "*$extension"
+}
+
+# ============================================================
+# 7. Script to Display and Handle System Logs
+# ============================================================
+
+view_system_logs() {
+    echo "==== View System Logs ===="
+    echo "1. View latest system logs"
+    echo "2. Clear system logs"
+    read -p "Choose an option: " option
+
+    case $option in
+        1)
+            tail -n 50 /var/log/syslog
+            ;;
+        2)
+            echo "Clearing logs..."
+            sudo truncate -s 0 /var/log/syslog
+            echo "Logs cleared!"
+            ;;
+        *)
+            echo "Invalid option."
+            ;;
+    esac
+}
+
+# ============================================================
+# Main Menu to Select Different Scripts
+# ============================================================
+
+echo "Welcome to the Shell Script Menu"
+echo "Choose an option:"
+echo "1. Display System Information"
+echo "2. Backup Directory"
+echo "3. Monitor Disk Usage"
+echo "4. List Active Processes"
+echo "5. Add New User"
+echo "6. Search Files by Extension"
+echo "7. View/Handle System Logs"
+
+read -p "Enter your choice (1-7): " choice
+
+case $choice in
+    1)
+        display_system_info
+        ;;
+    2)
+        backup_directory
+        ;;
+    3)
+        monitor_disk_usage
+        ;;
+    4)
+        list_processes
+        ;;
+    5)
+        add_new_user
+        ;;
+    6)
+        search_files_by_extension
+        ;;
+    7)
+        view_system_logs
+        ;;
+    *)
+        echo "Invalid choice. Please select between 1 and 7."
+        ;;
+esac
