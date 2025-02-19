@@ -1,0 +1,28 @@
+# 0/1 Knapsack Problem using Dynamic Programming
+
+def knapsack(weights, values, capacity):
+    n = len(weights)
+    
+    # Create a DP table with (n+1) rows and (capacity+1) columns
+    dp = [[0 for _ in range(capacity + 1)] for _ in range(n + 1)]
+    
+    # Build the DP table
+    for i in range(1, n + 1):  # Iterate through each item
+        for w in range(1, capacity + 1):  # Iterate through each possible weight capacity
+            if weights[i - 1] <= w:  # If the item can be included
+                dp[i][w] = max(dp[i - 1][w], dp[i - 1][w - weights[i - 1]] + values[i - 1])
+            else:  # If the item can't be included
+                dp[i][w] = dp[i - 1][w]
+    
+    # The result will be in dp[n][capacity]
+    return dp[n][capacity]
+
+# Example usage
+weights = [2, 3, 4, 5]  # Weights of the items
+values = [3, 4, 5, 6]   # Values of the items
+capacity = 5            # Capacity of the knapsack
+
+# Call the knapsack function
+max_value = knapsack(weights, values, capacity)
+
+print(f"Maximum value in knapsack: {max_value}")
